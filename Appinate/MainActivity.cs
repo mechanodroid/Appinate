@@ -20,6 +20,9 @@ namespace Appinate
 		HttpWebRequest _httpRequest;
 		HttpWebResponse _httpResponse;
 
+		public static List<GameData> gameDataList{ get; set; }
+
+
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
@@ -58,10 +61,13 @@ namespace Appinate
 							{
 								promo_video = (string)item["promo_video"],
 								description = (string)item["description"],
+								icon = (string)item["icon"],
 								title = (string)item["title"],
 							})
 						.ToList();
+					gameDataList = result;
 					webclient = null; 
+					StartActivity(typeof(ResultsActivity));
 				}
 
 				// Create a basic search request
