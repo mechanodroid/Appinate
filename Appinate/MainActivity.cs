@@ -8,6 +8,9 @@ using Android.Widget;
 using Android.OS;
 using System.Net;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System.Linq;
 namespace Appinate
 {
 	[Activity (Label = "Appinate", MainLauncher = true, Icon = "@drawable/icon")]
@@ -36,7 +39,7 @@ namespace Appinate
 
 				//Download string using webclient object
 				var webclient = new WebClient ();
-				string strResultData;
+				string strResultData ="";
 				try
 				{ 
 					strResultData=  webclient.DownloadString (new System.Uri(strUri));  
@@ -48,6 +51,16 @@ namespace Appinate
 				finally
 				{
 					webclient.Dispose ();   //dispose webclient object
+					//List<GameDataResults> result = JsonConvert.DeserializeObject<List<GameDataResults>>(strResultData);
+					var jObj = (JObject)JsonConvert.DeserializeObject(strResultData);
+					var result = jObj["results"]
+						.Select(item => new GameData
+							{
+								promo_video = (string)item["promo_video"],
+								description = (string)item["description"],
+								title = (string)item["title"],
+							})
+						.ToList();
 					webclient = null; 
 				}
 
