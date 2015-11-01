@@ -64,6 +64,7 @@ namespace Appinate
 								description = (string)item["description"],
 								icon = (string)item["icon"],
 								title = (string)item["title"],
+								market_url = (string)item["market_url"]
 							})
 						.ToList();
 					gameDataList = result;
