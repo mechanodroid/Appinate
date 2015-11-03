@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:p1="http://schemas.android.com/apk/res/android"
+    p1:layout_width="match_parent"
+    p1:layout_height="wrap_content"
+    p1:id="@+id/relativeLayout1"
+    p1:padding="5dp">
+    <ImageButton
+        p1:src="@android:drawable/ic_menu_gallery"
+        p1:layout_width="88.1dp"
+        p1:layout_height="77.7dp"
+        p1:id="@+id/imageButton1" />
+    <TextView
+        p1:text="Text"
+        p1:textAppearance="?android:attr/textAppearanceLarge"
+        p1:layout_width="123.9dp"
+        p1:layout_height="wrap_content"
+        p1:minWidth="50dp"
+        p1:id="@+id/textView1"
+        p1:layout_centerInParent="true"
+        p1:textScaleX="0.7" />
+    <CheckBox
+        p1:text="Like"
+        p1:layout_width="wrap_content"
+        p1:layout_height="wrap_content"
+        p1:id="@+id/checkBox1"
+        p1:layout_alignParentEnd="true"
+        p1:layout_marginBottom="16.7dp"
+        p1:layout_centerVertical="true"
+        p1:layout_alignParentRight="true"
+        p1:layout_marginRight="20.0dp"
+        p1:layout_marginLeft="0.0dp" />
+</RelativeLayout>
