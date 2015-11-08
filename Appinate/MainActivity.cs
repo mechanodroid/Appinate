@@ -12,6 +12,9 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using NRakeCore;
+using ModernHttpClient;
+using System.Net.Http;
+using System.Text;
 
 namespace Appinate
 {
@@ -34,8 +37,11 @@ namespace Appinate
 				res [j] = "";
 			//for entire like list, uses nrake and adds to the string the first term from each 
 			for (int i = 0; i < likeGameDataList.Count; i++) {
-				res = extractor.FindKeyPhrases(likeGameDataList[i].description);
-				toReturn = toReturn + res [0] + " ";	
+				//for now only take one of these!
+				if (i == 0) {
+					res = extractor.FindKeyPhrases (likeGameDataList [i].description);
+					toReturn = toReturn + res [0] + " ";
+				}
 			}
 			return toReturn;
 		}
@@ -65,77 +71,61 @@ namespace Appinate
 				//var res = extractor.FindKeyPhrases(//TODO Get Description and pass in here);
 				string recommendation = "";
 				CheckBox checkbox = FindViewById<CheckBox> (Resource.Id.checkBox1);
-				if(checkbox.Checked)
-					recommendation = CollectRecommendations();
-				TextView text = FindViewById<TextView>(Resource.Id.autoCompleteTextView1);
-				string Matters42=  "https://42matters.com/api/1/apps/search.json?q="+ text.Text + " "+ recommendation + "&limit=50&page=2&&access_token=8baf2a81c06ef3af38cd6ee3bbfee42f74e2497a";
-				string strUri=  string.Format ( Matters42 );
+				if (checkbox.Checked)
+					recommendation = CollectRecommendations ();
+				TextView text = FindViewById<TextView> (Resource.Id.autoCompleteTextView1);
+				string apiUrl = "https://42matters.com/api/1/apps/query.json?access_token=8baf2a81c06ef3af38cd6ee3bbfee42f74e2497a";
 
-				//Download string using webclient object
-				var webclient = new WebClient ();
-				string strResultData ="";
-				try
-				{ 
-					strResultData=  webclient.DownloadString (new System.Uri(strUri));  
-				}
-				catch
-				{ 
-					Toast.MakeText ( this , "Unable to connect to server!!!" , ToastLength.Short ).Show (); 
-				}
-				finally
-				{
-					webclient.Dispose ();   //dispose webclient object
-					//List<GameDataResults> result = JsonConvert.DeserializeObject<List<GameDataResults>>(strResultData);
-					var jObj = (JObject)JsonConvert.DeserializeObject(strResultData);
-					var result = jObj["results"]
-						.Select(item => new GameData
-							{
-								promo_video = (string)item["promo_video"],
-								description = (string)item["description"],
-								icon = (string)item["icon"],
-								title = (string)item["title"],
-								market_url = (string)item["market_url"]
+				Query data = new Query();
+				InnerQuery iq = new InnerQuery();
+				QueryParms qp = new QueryParms();
+				qp.sort = "number_ratings";
+				qp.cat_int = "2";
+				qp.from = 0;
+				qp.num = 100;
+				qp.sort_order = "desc";
+				qp.full_text_term = text.Text + " "+recommendation;//the actual search term
+				qp.include_full_text_desc = true;
+				iq.platform = "android";
+				iq.query_params = qp;
+				data.query = iq;
+
+				// Serialize our concrete class into a JSON String
+				var stringPayload = JsonConvert.SerializeObject(data);
+
+				// Wrap our JSON inside a StringContent which then can be used by the HttpClient class
+				var httpContent = new StringContent(stringPayload, Encoding.UTF8, "application/json");
+
+				using (var httpClient = new HttpClient()) {
+
+					// Do the actual request and await the response
+					var httpResponse = await httpClient.PostAsync(apiUrl, httpContent);
+
+					// If the response contains content we want to read it!
+					if (httpResponse.Content != null) {
+						var responseContent = await httpResponse.Content.ReadAsStringAsync();
+						var jObj = (JObject)JsonConvert.DeserializeObject (responseContent);
+						var result = jObj ["results"]
+							.Select (item => new GameData {
+								promo_video = (string)item ["promo_video"],
+								description = (string)item ["description"],
+								icon = (string)item ["icon"],
+								title = (string)item ["title"],
+								market_url = (string)item ["market_url"]
 							})
-						.ToList();
-					gameDataList = result;
-					webclient = null; 
-					StartActivity(typeof(ResultsActivity));
+							.ToList ();
+						gameDataList = result;
+						//webclient = null; 
+						StartActivity (typeof(ResultsActivity));
+						// From here on you could deserialize the ResponseContent back again to a concrete C# type using Json.Net
+					}
 				}
 
-				// Create a basic search request
-				/*HttpWebRequest httpWebRequest = SetHttpRequest("your api credentials", “your URL encoded http url for the API");
-					Console.WriteLine("httpWebRequest = " + httpWebRequest.Address.AbsoluteUri);
+	
 
-					// Perform search
-					try
-					{
-						HttpWebResponse httpRes = Search();
-						if (httpRes != null)
-						{
-							var responseStream = httpRes.GetResponseStream();
 
-						    var json = (JsonObject)JsonObject.Load(responseStream);
-
-							var deserializedJsonRecords = JsonConvert.DeserializeObject<ProductItem>(json.ToString());
-
-							var searchResults = new List<ProductItem>();
-
-							searchResults = (
-								from result in deserializedJsonRecords
-								select new ProductItem {
-									name = result.name,
-									price = result.price, 
-									category = result.category
-								}
-							).ToList();
-						
-						}
-					} catch (Exception ex) {
-						Console.WriteLine(ex.Message);
-					}
-				// ParseAndDisplay (json);
-				*/
 			};
+
 		}
 		private string UrlEncodeParameter(string paramToEncode)
 		{
