@@ -24,15 +24,24 @@ namespace Appinate
 
 		public static List<GameData> gameDataList{ get; set; }
 		public static List<GameData> likeGameDataList{ get; set; }
+		public static bool firstTime = true;
 
 
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
-
+			if(firstTime)
+				likeGameDataList = new List<GameData> ();
+			firstTime = false;
 			// Set our view from the "main" layout resource
 			SetContentView (Resource.Layout.Main);
 
+			Button buttonEditLikes = FindViewById<Button> (Resource.Id.button1);
+
+			buttonEditLikes.Click += async (sender, e) => {
+				StartActivity (typeof(LikeActivity));
+			};
+				
 
 			// Get our button from the layout resource,
 			// and attach an event to it

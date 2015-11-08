@@ -31,6 +31,19 @@ namespace Appinate
 			_gdListView = FindViewById<ListView> (Resource.Id.listView1);
 			_adapter = new ResultsListViewAdapter (this);
 			_gdListView.Adapter = _adapter;
+
+
+			Button buttonEditLikes  = FindViewById<Button>(Resource.Id.button2);
+
+			buttonEditLikes.Click += delegate {
+				StartActivity (typeof(LikeActivity));
+			};
+			Button buttonNewSearch  =FindViewById<Button>(Resource.Id.button1);
+
+			buttonNewSearch.Click += delegate {
+				StartActivity (typeof(MainActivity));
+			};
+
 		}
 		private Bitmap GetImageBitmapFromUrl(string url)
 		{

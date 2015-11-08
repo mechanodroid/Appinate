@@ -52,6 +52,19 @@ namespace Appinate
 				var intent = new Intent (Intent.ActionView, uri);
 				_context.StartActivity (intent);
 			};
+
+
+			CheckBox checkbox = view.FindViewById<CheckBox> (Resource.Id.checkBox1);
+			checkbox.Click += delegate {
+				if(checkbox.Checked){
+					var item = MainActivity.likeGameDataList.SingleOrDefault( x => x.title == gd.title );
+					if ( item == null )
+						MainActivity.likeGameDataList.Add(gd);
+				} else {
+					//remove it from the list
+					MainActivity.likeGameDataList.Remove(gd);
+				}	
+			};
 			return view;
 		} 
 		private Bitmap GetImageBitmapFromUrl(string url)

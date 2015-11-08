@@ -45,11 +45,18 @@ namespace Appinate
 			view.FindViewById<TextView> (Resource.Id.textView1).Text = gd.title;
 
 			CheckBox checkbox = view.FindViewById<CheckBox> (Resource.Id.checkBox1);
+			//if it's already liked, then check it automatically to start
+			var itemGame = MainActivity.likeGameDataList.SingleOrDefault( x => x.title == gd.title );
+			if (itemGame != null)
+				checkbox.Checked = true;
 			checkbox.Click += delegate {
 				if(checkbox.Checked){
 					//add it to the list
-					MainActivity.likeGameDataList.Add(gd);
+					var item = MainActivity.likeGameDataList.SingleOrDefault( x => x.title == gd.title );
+					if ( item == null )
+						MainActivity.likeGameDataList.Add(gd);
 				} else {
+
 					//remove it from the list
 					MainActivity.likeGameDataList.Remove(gd);
 				}	

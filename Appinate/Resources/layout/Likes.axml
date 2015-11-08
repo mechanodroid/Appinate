@@ -8,7 +8,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/relativeLayout1">
         <Button
-            android:text="Search"
+            android:text="New Search"
             android:layout_width="383.4dp"
             android:layout_height="wrap_content"
             android:id="@+id/button2"

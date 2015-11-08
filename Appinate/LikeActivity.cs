@@ -34,10 +34,9 @@ namespace Appinate
 
 			// Get our button from the layout resource,
 			// and attach an event to it
-			Button button = FindViewById<Button> (Resource.Id.button2);
-
-			button.Click += async (sender, e) => {
-				StartActivity(typeof(MainActivity));
+			Button buttonNewSearch  =FindViewById<Button>(Resource.Id.button2);
+			buttonNewSearch.Click += delegate {
+				StartActivity (typeof(MainActivity));
 			};
 		}
 		private Bitmap GetImageBitmapFromUrl(string url)
