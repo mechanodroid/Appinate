@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 
 using Android.App;
 using Android.Content;
@@ -15,22 +16,29 @@ using Android.Graphics;
 
 namespace Appinate
 {
-	[Activity (Label = "ResultsActivity")]			
-	public class ResultsActivity : Activity
+	[Activity (Label = "LikeActivity")]			
+	public class LikeActivity : Activity
 	{
-		string[] items;
 		ListView _gdListView;
-		ResultsListViewAdapter _adapter;
+		LikeListViewAdapter _adapter;
 
 		protected override void OnCreate (Bundle bundle)
 		{
-
+			
 			base.OnCreate(bundle);
 
-			SetContentView (Resource.Layout.Results);
+			SetContentView (Resource.Layout.Likes);
 			_gdListView = FindViewById<ListView> (Resource.Id.listView1);
-			_adapter = new ResultsListViewAdapter (this);
+			_adapter = new LikeListViewAdapter (this);
 			_gdListView.Adapter = _adapter;
+
+			// Get our button from the layout resource,
+			// and attach an event to it
+			Button button = FindViewById<Button> (Resource.Id.button2);
+
+			button.Click += async (sender, e) => {
+				StartActivity(typeof(MainActivity));
+			};
 		}
 		private Bitmap GetImageBitmapFromUrl(string url)
 		{
@@ -49,3 +57,4 @@ namespace Appinate
 		}
 	}
 }
+

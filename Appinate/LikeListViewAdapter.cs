@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 
 using Android.App;
 using Android.Content;
@@ -15,17 +16,17 @@ using Android.Graphics;
 
 namespace Appinate
 {
-	public class ResultsListViewAdapter : BaseAdapter<GameData>
+	public class LikeListViewAdapter : BaseAdapter<GameData>
 	{
 		private readonly Activity _context;
 
-		public ResultsListViewAdapter(Activity context)
+		public LikeListViewAdapter(Activity context)
 		{
 			_context = context;
 		}
 		public override int Count
 		{
-			get { return MainActivity.gameDataList.Count; }
+			get { return MainActivity.likeGameDataList.Count; }
 		}
 		public override long GetItemId(int position)
 		{
@@ -33,15 +34,26 @@ namespace Appinate
 		}
 		public override GameData this[int position]
 		{
-			get { return MainActivity.gameDataList [position]; }
+			get { return MainActivity.likeGameDataList [position]; }
 		}
 		public override View GetView(int position, View convertView, ViewGroup parent)	{
 			View view = convertView;
 			if (view == null)
-				view = _context.LayoutInflater.Inflate(Resource.Layout.ResultsListItem, null);
+				view = _context.LayoutInflater.Inflate(Resource.Layout.LikeListItem, null);
 
-			GameData gd = MainActivity.gameDataList[position];
+			GameData gd = MainActivity.likeGameDataList[position];
 			view.FindViewById<TextView> (Resource.Id.textView1).Text = gd.title;
+
+			CheckBox checkbox = view.FindViewById<CheckBox> (Resource.Id.checkBox1);
+			checkbox.Click += delegate {
+				if(checkbox.Checked){
+					//add it to the list
+					MainActivity.likeGameDataList.Add(gd);
+				} else {
+					//remove it from the list
+					MainActivity.likeGameDataList.Remove(gd);
+				}	
+			};
 
 			ImageButton button  =view.FindViewById<ImageButton>(Resource.Id.imageButton1);
 			var imageBitmap = GetImageBitmapFromUrl(gd.icon);
@@ -69,6 +81,7 @@ namespace Appinate
 
 			return imageBitmap;
 		}
-
+		
 	}
 }
+

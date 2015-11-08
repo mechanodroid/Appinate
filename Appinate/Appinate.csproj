@@ -15,7 +15,7 @@
     <AndroidUseLatestPlatformSdk>True</AndroidUseLatestPlatformSdk>
     <AssemblyName>Appinate</AssemblyName>
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
-    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v5.1</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -53,6 +53,16 @@
     <Compile Include="GameData.cs" />
     <Compile Include="ResultsActivity.cs" />
     <Compile Include="ResultsListViewAdapter.cs" />
+    <Compile Include="StopWordFilters\BasicStopWordFilter.cs" />
+    <Compile Include="StopWordFilters\EnglishSmartStopWordFilter.cs" />
+    <Compile Include="StopWordFilters\FrenchStopWordFilter.cs" />
+    <Compile Include="StopWordFilters\IStopWordFilter.cs" />
+    <Compile Include="NRakeCore\KeywordExtractor.cs" />
+    <Compile Include="NRakeCore\SparseMatrix.cs" />
+    <Compile Include="NRakeCore\WordCooccurrenceMatrix.cs" />
+    <Compile Include="NRakeCore\WordScore.cs" />
+    <Compile Include="LikeListViewAdapter.cs" />
+    <Compile Include="LikeActivity.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -69,6 +79,8 @@
     <AndroidResource Include="Resources\drawable-xxxhdpi\Icon.png" />
     <AndroidResource Include="Resources\layout\Results.axml" />
     <AndroidResource Include="Resources\layout\ResultsListItem.axml" />
+    <AndroidResource Include="Resources\layout\LikeListItem.axml" />
+    <AndroidResource Include="Resources\layout\Likes.axml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>
@@ -76,5 +88,9 @@
       <Version>4.5.11.1</Version>
       <Visible>False</Visible>
     </XamarinComponentReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="StopWordFilters\" />
+    <Folder Include="NRakeCore\" />
   </ItemGroup>
 </Project>

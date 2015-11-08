@@ -11,6 +11,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
+using NRakeCore;
+
 namespace Appinate
 {
 	[Activity (Label = "Appinate", MainLauncher = true, Icon = "@drawable/icon")]
@@ -21,6 +23,7 @@ namespace Appinate
 		HttpWebResponse _httpResponse;
 
 		public static List<GameData> gameDataList{ get; set; }
+		public static List<GameData> likeGameDataList{ get; set; }
 
 
 		protected override void OnCreate (Bundle bundle)
@@ -37,6 +40,9 @@ namespace Appinate
 			
 			button.Click += async (sender, e) => {
 
+				//KeywordExtractor extractor = new KeywordExtractor();
+				//var res = extractor.FindKeyPhrases(//TODO Get Description and pass in here);
+				
 				TextView text = FindViewById<TextView>(Resource.Id.autoCompleteTextView1);
 				string Matters42=  "https://42matters.com/api/1/apps/search.json?q="+ text.Text + "&limit=50&page=2&&access_token=8baf2a81c06ef3af38cd6ee3bbfee42f74e2497a";
 				string strUri=  string.Format ( Matters42 );
