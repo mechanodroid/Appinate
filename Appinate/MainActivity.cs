@@ -26,7 +26,19 @@ namespace Appinate
 		public static List<GameData> likeGameDataList{ get; set; }
 		public static bool firstTime = true;
 
-
+		protected string CollectRecommendations() { 
+			string toReturn = "";
+			KeywordExtractor extractor = new KeywordExtractor();
+			string[] res = new string[100]; //<--magic numbers, ahh!, but I'll always only pick the first so its ok
+			for (int j = 0; j < 100; j++)
+				res [j] = "";
+			//for entire like list, uses nrake and adds to the string the first term from each 
+			for (int i = 0; i < likeGameDataList.Count; i++) {
+				res = extractor.FindKeyPhrases(likeGameDataList[i].description);
+				toReturn = toReturn + res [0] + " ";	
+			}
+			return toReturn;
+		}
 		protected override void OnCreate (Bundle bundle)
 		{
 			base.OnCreate (bundle);
@@ -51,9 +63,12 @@ namespace Appinate
 
 				//KeywordExtractor extractor = new KeywordExtractor();
 				//var res = extractor.FindKeyPhrases(//TODO Get Description and pass in here);
-				
+				string recommendation = "";
+				CheckBox checkbox = FindViewById<CheckBox> (Resource.Id.checkBox1);
+				if(checkbox.Checked)
+					recommendation = CollectRecommendations();
 				TextView text = FindViewById<TextView>(Resource.Id.autoCompleteTextView1);
-				string Matters42=  "https://42matters.com/api/1/apps/search.json?q="+ text.Text + "&limit=50&page=2&&access_token=8baf2a81c06ef3af38cd6ee3bbfee42f74e2497a";
+				string Matters42=  "https://42matters.com/api/1/apps/search.json?q="+ text.Text + " "+ recommendation + "&limit=50&page=2&&access_token=8baf2a81c06ef3af38cd6ee3bbfee42f74e2497a";
 				string strUri=  string.Format ( Matters42 );
 
 				//Download string using webclient object
