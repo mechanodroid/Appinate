@@ -33,7 +33,11 @@ namespace Appinate
 		}
 		public override GameData this[int position]
 		{
-			get { return MainActivity.gameDataList [position]; }
+			get {
+				Random rand;
+				//for now get a random from the list!
+				return MainActivity.gameDataList [position]; 
+			}
 		}
 		public override View GetView(int position, View convertView, ViewGroup parent)	{
 			View view = convertView;

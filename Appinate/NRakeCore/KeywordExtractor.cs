@@ -34,7 +34,7 @@ namespace NRakeCore
 
         public KeywordExtractor()
         {
-            _stopWords = new BasicStopWordFilter();
+            _stopWords = new EnglishSmartStopWordFilter();
         }
 
         public KeywordExtractor(IStopWordFilter filter)

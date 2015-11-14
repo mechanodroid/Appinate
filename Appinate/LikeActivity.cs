@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.IO;
 
 using Android.App;
 using Android.Content;
@@ -37,6 +38,12 @@ namespace Appinate
 			Button buttonNewSearch  =FindViewById<Button>(Resource.Id.button2);
 			buttonNewSearch.Click += delegate {
 				StartActivity (typeof(MainActivity));
+			};
+
+			Button buttonSave  =FindViewById<Button>(Resource.Id.button4);
+			buttonSave.Click += delegate {
+				string likeString = JsonConvert.SerializeObject(MainActivity.likeGameDataList);
+				File.WriteAllText(MainActivity.storageFile, likeString);
 			};
 		}
 		private Bitmap GetImageBitmapFromUrl(string url)

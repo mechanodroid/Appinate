@@ -1,5 +1,6 @@
 ﻿using System;
-
+using System.Text.RegularExpressions;
+using System.IO;
 using Android.App;
 using Android.Content;
 using Android.Runtime;
@@ -27,7 +28,10 @@ namespace Appinate
 
 		public static List<GameData> gameDataList{ get; set; }
 		public static List<GameData> likeGameDataList{ get; set; }
+		public static int numSeperateLists { get; set; }
 		public static bool firstTime = true;
+		public static string storagePath;
+		public static string storageFile;
 
 		protected string CollectRecommendations() { 
 			string toReturn = "";
@@ -36,20 +40,42 @@ namespace Appinate
 			for (int j = 0; j < 100; j++)
 				res [j] = "";
 			//for entire like list, uses nrake and adds to the string the first term from each 
-			for (int i = 0; i < likeGameDataList.Count; i++) {
-				//for now only take one of these!
-				if (i == 0) {
-					res = extractor.FindKeyPhrases (likeGameDataList [i].description);
-					toReturn = toReturn + res [0] + " ";
-				}
+			//for now only take one of these! --> make it random I guess
+			{
+				Random rnd = new Random();
+				res = extractor.FindKeyPhrases (likeGameDataList [rnd.Next(0, likeGameDataList.Count)].description);
+				toReturn = toReturn + res [0] + " ";
 			}
 			return toReturn;
 		}
+		protected int TrimToStringArray(string completeString, ref string[] theArray)
+		{
+			string input = completeString;
+			string pattern = " ";            // Split on spaces
+			int countSpaces = completeString.Count(Char.IsWhiteSpace);
+			theArray = Regex.Split(input, pattern);
+			return countSpaces+1;
+
+		}
 		protected override void OnCreate (Bundle bundle)
 		{
+			List<GameData> gameDataListTemp = new List<GameData>();
+
+			//read in like list
+			storagePath = System.Environment.GetFolderPath (System.Environment.SpecialFolder.MyDocuments);
+			storageFile = storagePath + "/appinate.json";
+			if (File.Exists (storageFile)) {
+				string likeString = File.ReadAllText (storageFile);
+				likeGameDataList = JsonConvert.DeserializeObject<List<GameData>> (likeString);
+				gameDataList = new List<GameData> ();
+				firstTime = false;
+			}
+
 			base.OnCreate (bundle);
-			if(firstTime)
+			if (firstTime) {
 				likeGameDataList = new List<GameData> ();
+				gameDataList = new List<GameData> ();
+			}
 			firstTime = false;
 			// Set our view from the "main" layout resource
 			SetContentView (Resource.Layout.Main);
@@ -70,60 +96,79 @@ namespace Appinate
 				//KeywordExtractor extractor = new KeywordExtractor();
 				//var res = extractor.FindKeyPhrases(//TODO Get Description and pass in here);
 				string recommendation = "";
+				numSeperateLists = 1;
+				gameDataList.Clear();
+				gameDataListTemp.Clear();
+				string[] recommendations = new string[200];
+				int sizeOfRecommendations;
 				CheckBox checkbox = FindViewById<CheckBox> (Resource.Id.checkBox1);
 				if (checkbox.Checked)
 					recommendation = CollectRecommendations ();
 				TextView text = FindViewById<TextView> (Resource.Id.autoCompleteTextView1);
 				string apiUrl = "https://42matters.com/api/1/apps/query.json?access_token=8baf2a81c06ef3af38cd6ee3bbfee42f74e2497a";
 
-				Query data = new Query();
-				InnerQuery iq = new InnerQuery();
-				QueryParms qp = new QueryParms();
-				qp.sort = "number_ratings";
-				qp.cat_int = "2";
-				qp.from = 0;
-				qp.num = 100;
-				qp.sort_order = "desc";
-				qp.full_text_term = text.Text + " "+recommendation;//the actual search term
-				qp.include_full_text_desc = true;
-				iq.platform = "android";
-				iq.query_params = qp;
-				data.query = iq;
+				sizeOfRecommendations = this.TrimToStringArray(recommendation,ref recommendations);
+				int currentRecommendationIndex = 0;
+				int recommendationsToSearch = Math.Min(sizeOfRecommendations,3);
+				string searchTerm = text.Text;
+				do
+				{
+					Query data = new Query();
+					InnerQuery iq = new InnerQuery();
+					QueryParms qp = new QueryParms();
+					qp.sort = "number_ratings";
+					qp.from = 0;
+					qp.num = 100;
+					qp.sort_order = "desc";
+					qp.full_text_term = searchTerm;//the actual search term
+					qp.include_full_text_desc = true;
+					iq.platform = "android";
+					iq.query_params = qp;
+					data.query = iq;
 
-				// Serialize our concrete class into a JSON String
-				var stringPayload = JsonConvert.SerializeObject(data);
+					// Serialize our concrete class into a JSON String
+					var stringPayload = JsonConvert.SerializeObject(data);
 
-				// Wrap our JSON inside a StringContent which then can be used by the HttpClient class
-				var httpContent = new StringContent(stringPayload, Encoding.UTF8, "application/json");
+					// Wrap our JSON inside a StringContent which then can be used by the HttpClient class
+					var httpContent = new StringContent(stringPayload, Encoding.UTF8, "application/json");
 
-				using (var httpClient = new HttpClient()) {
+					using (var httpClient = new HttpClient()) {
 
-					// Do the actual request and await the response
-					var httpResponse = await httpClient.PostAsync(apiUrl, httpContent);
+						// Do the actual request and await the response
+						var httpResponse = await httpClient.PostAsync(apiUrl, httpContent);
 
-					// If the response contains content we want to read it!
-					if (httpResponse.Content != null) {
-						var responseContent = await httpResponse.Content.ReadAsStringAsync();
-						var jObj = (JObject)JsonConvert.DeserializeObject (responseContent);
-						var result = jObj ["results"]
-							.Select (item => new GameData {
-								promo_video = (string)item ["promo_video"],
-								description = (string)item ["description"],
-								icon = (string)item ["icon"],
-								title = (string)item ["title"],
-								market_url = (string)item ["market_url"]
-							})
-							.ToList ();
-						gameDataList = result;
-						//webclient = null; 
-						StartActivity (typeof(ResultsActivity));
-						// From here on you could deserialize the ResponseContent back again to a concrete C# type using Json.Net
+						// If the response contains content we want to read it!
+						if (httpResponse.Content != null) {
+							var responseContent = await httpResponse.Content.ReadAsStringAsync();
+							var jObj = (JObject)JsonConvert.DeserializeObject (responseContent);
+							var result = jObj ["results"]
+								.Select (item => new GameData {
+									promo_video = (string)item ["promo_video"],
+									description = (string)item ["description"],
+									icon = (string)item ["icon"],
+									title = (string)item ["title"],
+									market_url = (string)item ["market_url"]
+								})
+								.ToList ();
+							gameDataListTemp = result;
+							int index = 0;
+							foreach(GameData g in gameDataListTemp)
+							{
+								gameDataList.Insert(index*numSeperateLists, g);
+								index++;
+							}
+							//webclient = null; 
+							StartActivity (typeof(ResultsActivity));
+							// From here on you could deserialize the ResponseContent back again to a concrete C# type using Json.Net
+						}
 					}
-				}
-
-	
-
-
+					if(currentRecommendationIndex<recommendations.Length)
+						searchTerm = recommendations[currentRecommendationIndex];
+					else 
+						currentRecommendationIndex = recommendationsToSearch; //skip to end
+					currentRecommendationIndex++;
+					numSeperateLists++;
+				} while (currentRecommendationIndex < recommendationsToSearch);
 			};
 
 		}
