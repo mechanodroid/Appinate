@@ -43,7 +43,9 @@ namespace Appinate
 			//for now only take one of these! --> make it random I guess
 			{
 				Random rnd = new Random();
-				res = extractor.FindKeyPhrases (likeGameDataList [rnd.Next(0, likeGameDataList.Count)].description);
+				int r = rnd.Next (0, likeGameDataList.Count);
+				res = extractor.FindKeyPhrases (likeGameDataList [r].description);
+				res[0] = likeGameDataList [r].title;
 				toReturn = toReturn + res [0] + " ";
 			}
 			return toReturn;
@@ -56,6 +58,20 @@ namespace Appinate
 			theArray = Regex.Split(input, pattern);
 			return countSpaces+1;
 
+		}
+		protected void pruneGameDataListWithLikeList()
+		{
+			List<GameData> removeList = new List<GameData>();
+			foreach (GameData g in gameDataList) 
+			{
+				GameData findResult = likeGameDataList.Find (x => x.title == g.title);
+				if (findResult != null) {
+					removeList.Add (g);
+				}
+			}
+			foreach (GameData g in removeList) {
+				gameDataList.Remove (g);
+			}
 		}
 		protected override void OnCreate (Bundle bundle)
 		{
@@ -169,6 +185,7 @@ namespace Appinate
 					currentRecommendationIndex++;
 					numSeperateLists++;
 				} while (currentRecommendationIndex < recommendationsToSearch);
+				pruneGameDataListWithLikeList();//remove games which are already in users like list!
 			};
 
 		}
