@@ -16,6 +16,7 @@ using NRakeCore;
 using ModernHttpClient;
 using System.Net.Http;
 using System.Text;
+using Microsoft.WindowsAzure.MobileServices;
 
 namespace Appinate
 {
@@ -28,10 +29,17 @@ namespace Appinate
 
 		public static List<GameData> gameDataList{ get; set; }
 		public static List<GameData> likeGameDataList{ get; set; }
+		public static List<GameData> likeCloudGameDataList{ get; set; }
 		public static int numSeperateLists { get; set; }
 		public static bool firstTime = true;
 		public static string storagePath;
 		public static string storageFile;
+		public static string currentSelectedGamerType;
+
+		public static MobileServiceClient MobileService = new MobileServiceClient(
+			"https://appinateuwm.azure-mobile.net/",
+			"vuFYEJOrEHRrAtKnDpaUrbcgfVGTMx66"
+		);
 
 		protected string CollectRecommendations() { 
 			string toReturn = "";
@@ -50,6 +58,24 @@ namespace Appinate
 			}
 			return toReturn;
 		}
+		protected string CollectCloudRecommendations() { 
+			string toReturn = "";
+			KeywordExtractor extractor = new KeywordExtractor();
+			string[] res = new string[100]; //<--magic numbers, ahh!, but I'll always only pick the first so its ok
+			for (int j = 0; j < 100; j++)
+				res [j] = "";
+			//for entire like list, uses nrake and adds to the string the first term from each 
+			//for now only take one of these! --> make it random I guess
+			{
+				Random rnd = new Random();
+				int r = rnd.Next (0, likeCloudGameDataList.Count);
+				res = extractor.FindKeyPhrases (likeGameDataList [r].description);
+				res[0] = likeGameDataList [r].title;
+				toReturn = toReturn + res [0] + " ";
+			}
+			return toReturn;
+		}
+
 		protected int TrimToStringArray(string completeString, ref string[] theArray)
 		{
 			string input = completeString;
@@ -73,8 +99,17 @@ namespace Appinate
 				gameDataList.Remove (g);
 			}
 		}
+		private void spinner_ItemSelected (object sender, AdapterView.ItemSelectedEventArgs e)
+		{
+			Spinner spinner = (Spinner)sender;
+
+			string toast = string.Format ("The gamer type is is {0}", spinner.GetItemAtPosition (e.Position));
+			Toast.MakeText (this, toast, ToastLength.Long).Show ();
+			currentSelectedGamerType = string.Format ("{0}", spinner.GetItemAtPosition (e.Position));
+		}
 		protected override void OnCreate (Bundle bundle)
 		{
+			
 			List<GameData> gameDataListTemp = new List<GameData>();
 
 			//read in like list
@@ -96,12 +131,95 @@ namespace Appinate
 			// Set our view from the "main" layout resource
 			SetContentView (Resource.Layout.Main);
 
+			Spinner spinner = FindViewById<Spinner> (Resource.Id.spinner1);
+
+			spinner.ItemSelected += new EventHandler<AdapterView.ItemSelectedEventArgs> (spinner_ItemSelected);
+			var adapter = ArrayAdapter.CreateFromResource (
+				this, Resource.Array.gamer_type_array, Android.Resource.Layout.SimpleSpinnerItem);
+
+			adapter.SetDropDownViewResource (Android.Resource.Layout.SimpleSpinnerDropDownItem);
+			spinner.Adapter = adapter;
+
 			Button buttonEditLikes = FindViewById<Button> (Resource.Id.button1);
+			CheckBox checkbox2 = FindViewById<CheckBox> (Resource.Id.checkBox2);
 
 			buttonEditLikes.Click += async (sender, e) => {
+				if(!checkbox2.Checked)
+				{//turn phase 3 completely off
+					MainActivity.currentSelectedGamerType="";
+				}
 				StartActivity (typeof(LikeActivity));
 			};
-				
+
+			CheckBox checkbox = FindViewById<CheckBox> (Resource.Id.checkBox1);
+
+			checkbox2.Click += async (sender, e) => {
+				//Getting back the data:
+				likeCloudGameDataList.Clear();
+				if(currentSelectedGamerType!="")
+				{
+					switch(currentSelectedGamerType)
+					{
+					case "Casual":
+						IMobileServiceTable<CasualGamer> casualTable =
+							MobileService.GetTable<CasualGamer>();
+
+						IMobileServiceTableQuery<CasualGamer> query = casualTable.CreateQuery().OrderByDescending(t => t.date);
+						List<CasualGamer> games = await query.ToListAsync();
+						foreach(GameData g in games.First().myList)
+						{
+							likeCloudGameDataList.Add(g);
+						}
+						break;
+					case "Hardcore":
+						IMobileServiceTable<HardcoreGamer> hardcoreTable =
+							MobileService.GetTable<HardcoreGamer>();
+
+						IMobileServiceTableQuery<HardcoreGamer> query2 = hardcoreTable.CreateQuery().OrderByDescending(t => t.date);
+						List<HardcoreGamer> games2 = await query2.ToListAsync();
+						foreach(GameData g in games2.First().myList)
+						{
+							likeCloudGameDataList.Add(g);
+						}
+						break;
+					case "Puzzle":
+						IMobileServiceTable<PuzzleGamer> puzzleTable =
+							MobileService.GetTable<PuzzleGamer>();
+
+						IMobileServiceTableQuery<PuzzleGamer> query3 = puzzleTable.CreateQuery().OrderByDescending(t => t.date);
+						List<PuzzleGamer> games3 = await query3.ToListAsync();
+						foreach(GameData g in games3.First().myList)
+						{
+							likeCloudGameDataList.Add(g);
+						}
+						break;
+					case "Apps User":
+						IMobileServiceTable<AppUser> appUserTable =
+							MobileService.GetTable<AppUser>();
+
+						IMobileServiceTableQuery<AppUser> query4 = appUserTable.CreateQuery().OrderByDescending(t => t.date);
+						List<AppUser> games4 = await query4.ToListAsync();
+						foreach(GameData g in games4.First().myList)
+						{
+							likeCloudGameDataList.Add(g);
+						}
+						break;
+
+					case "Racing" : 
+						IMobileServiceTable<RacingGamer> racingTable =
+							MobileService.GetTable<RacingGamer>();
+
+						IMobileServiceTableQuery<RacingGamer> query5 = racingTable.CreateQuery().OrderByDescending(t => t.date);
+						List<RacingGamer> games5 = await query5.ToListAsync();
+						foreach(GameData g in games5.First().myList)
+						{
+							likeCloudGameDataList.Add(g);
+						}
+						break;
+					}
+				}
+			};
+
 
 			// Get our button from the layout resource,
 			// and attach an event to it
@@ -109,23 +227,39 @@ namespace Appinate
 			
 			button.Click += async (sender, e) => {
 
+				//The following is experimental
+				//BEGIN EXPERIMENTAL
+				//just an azure test for now
+				CurrentPlatform.Init();
+
+				//END EXPERIMENTAL
+				
 				//KeywordExtractor extractor = new KeywordExtractor();
 				//var res = extractor.FindKeyPhrases(//TODO Get Description and pass in here);
 				string recommendation = "";
 				numSeperateLists = 1;
+				int maxSize = 3;
+				if(checkbox2.Checked)
+				{	//we're using phase three: cloud recommendations
+					maxSize = 4;
+				}
 				gameDataList.Clear();
 				gameDataListTemp.Clear();
 				string[] recommendations = new string[200];
 				int sizeOfRecommendations;
-				CheckBox checkbox = FindViewById<CheckBox> (Resource.Id.checkBox1);
 				if (checkbox.Checked)
 					recommendation = CollectRecommendations ();
 				TextView text = FindViewById<TextView> (Resource.Id.autoCompleteTextView1);
 				string apiUrl = "https://42matters.com/api/1/apps/query.json?access_token=8baf2a81c06ef3af38cd6ee3bbfee42f74e2497a";
 
+				if(checkbox2.Checked)
+				{
+					//phase 3
+					recommendation += CollectCloudRecommendations();
+				}
 				sizeOfRecommendations = this.TrimToStringArray(recommendation,ref recommendations);
 				int currentRecommendationIndex = 0;
-				int recommendationsToSearch = Math.Min(sizeOfRecommendations,3);
+				int recommendationsToSearch = Math.Min(sizeOfRecommendations,maxSize);
 				string searchTerm = text.Text;
 				do
 				{

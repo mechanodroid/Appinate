@@ -14,6 +14,8 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using Android.Graphics;
+using Microsoft.WindowsAzure.MobileServices;
+
 
 namespace Appinate
 {
@@ -41,9 +43,46 @@ namespace Appinate
 			};
 
 			Button buttonSave  =FindViewById<Button>(Resource.Id.button4);
-			buttonSave.Click += delegate {
+			buttonSave.Click  += async (sender, e) => {
 				string likeString = JsonConvert.SerializeObject(MainActivity.likeGameDataList);
 				File.WriteAllText(MainActivity.storageFile, likeString);
+				//Inserting the data into the cloud
+				if(MainActivity.currentSelectedGamerType!="")
+				{
+					switch(MainActivity.currentSelectedGamerType)
+					{
+					case "Racing":
+						RacingGamer rg = new RacingGamer { 
+							date = DateTime.Now,
+							myList = MainActivity.likeGameDataList };
+						await MainActivity.MobileService.GetTable<RacingGamer>().InsertAsync(rg);
+						break;
+					case "Casual":
+						CasualGamer cg = new CasualGamer { 
+							date = DateTime.Now,
+							myList = MainActivity.likeGameDataList };
+						await MainActivity.MobileService.GetTable<CasualGamer>().InsertAsync(cg);
+						break;
+					case "Hardcore":
+						HardcoreGamer hg = new HardcoreGamer { 
+							date = DateTime.Now,
+							myList = MainActivity.likeGameDataList };
+						await MainActivity.MobileService.GetTable<HardcoreGamer>().InsertAsync(hg);
+						break;
+					case "Puzzle":
+						PuzzleGamer pg = new PuzzleGamer { 
+							date = DateTime.Now,
+							myList = MainActivity.likeGameDataList };
+						await MainActivity.MobileService.GetTable<PuzzleGamer>().InsertAsync(pg);
+						break;
+					case "Apps User":
+						AppUser au = new AppUser { 
+							date = DateTime.Now,
+							myList = MainActivity.likeGameDataList };
+						await MainActivity.MobileService.GetTable<AppUser>().InsertAsync(au);
+						break;
+					}
+				}
 			};
 		}
 		private Bitmap GetImageBitmapFromUrl(string url)

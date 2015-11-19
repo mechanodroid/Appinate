@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Appinate
 {
@@ -6,6 +7,42 @@ namespace Appinate
 	{
 		//[JsonProperty("results")]
 		public GameData GameData { get; set; }
+	}
+
+	public class Item
+	{
+		public string Id { get; set; }
+		public string Text { get; set; }
+	}
+
+	public class RacingGamer
+	{
+		public List<GameData> myList { get; set; }
+		public DateTime date;
+	}
+	public class PuzzleGamer
+	{
+		public List<GameData> myList { get; set; }
+		public DateTime date;
+
+	}
+	public class CasualGamer
+	{
+		public List<GameData> myList { get; set; }
+		public DateTime date;
+
+	}
+	public class HardcoreGamer
+	{
+		public List<GameData> myList { get; set; }
+		public DateTime date;
+
+	}
+	public class AppUser
+	{
+		public List<GameData> myList { get; set; }
+		public DateTime date;
+
 	}
 
 	public class GameData

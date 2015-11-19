@@ -2,4 +2,12 @@
 <resources>
 	<string name="hello">Appinate me!</string>
 	<string name="app_name">Appinate</string>
+	<string name="gamer_prompt">Choose Gamer Type</string>
+    <string-array name="gamer_type_array">
+        <item>Puzzle</item>
+        <item>Casual</item>
+        <item>Hardcore</item>
+        <item>Racing</item>
+        <item>Apps User</item>
+    </string-array>
 </resources>
