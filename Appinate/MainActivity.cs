@@ -111,6 +111,7 @@ namespace Appinate
 		{
 			
 			List<GameData> gameDataListTemp = new List<GameData>();
+			List<GameData> likeCloudGameDataList = new List<GameData> ();
 
 			//read in like list
 			storagePath = System.Environment.GetFolderPath (System.Environment.SpecialFolder.MyDocuments);
@@ -146,7 +147,7 @@ namespace Appinate
 			buttonEditLikes.Click += async (sender, e) => {
 				if(!checkbox2.Checked)
 				{//turn phase 3 completely off
-					MainActivity.currentSelectedGamerType="";
+					//MainActivity.currentSelectedGamerType="";
 				}
 				StartActivity (typeof(LikeActivity));
 			};
