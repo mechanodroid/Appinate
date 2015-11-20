@@ -45,6 +45,7 @@ namespace Appinate
 			Button buttonSave  =FindViewById<Button>(Resource.Id.button4);
 			buttonSave.Click  += async (sender, e) => {
 				string likeString = JsonConvert.SerializeObject(MainActivity.likeGameDataList);
+				string stringsFromLikeList = MainActivity.CollectRecommendations();
 				File.WriteAllText(MainActivity.storageFile, likeString);
 				//Inserting the data into the cloud
 				if(MainActivity.currentSelectedGamerType!="")
@@ -54,31 +55,31 @@ namespace Appinate
 					case "Racing":
 						RacingGamer rg = new RacingGamer { 
 							date = DateTime.Now,
-							myList = MainActivity.likeGameDataList };
+							myList = stringsFromLikeList };
 						await MainActivity.MobileService.GetTable<RacingGamer>().InsertAsync(rg);
 						break;
 					case "Casual":
 						CasualGamer cg = new CasualGamer { 
 							date = DateTime.Now,
-							myList = MainActivity.likeGameDataList };
+							myList = stringsFromLikeList };
 						await MainActivity.MobileService.GetTable<CasualGamer>().InsertAsync(cg);
 						break;
 					case "Hardcore":
 						HardcoreGamer hg = new HardcoreGamer { 
 							date = DateTime.Now,
-							myList = MainActivity.likeGameDataList };
+							myList = stringsFromLikeList };
 						await MainActivity.MobileService.GetTable<HardcoreGamer>().InsertAsync(hg);
 						break;
 					case "Puzzle":
 						PuzzleGamer pg = new PuzzleGamer { 
 							date = DateTime.Now,
-							myList = MainActivity.likeGameDataList };
+							myList = stringsFromLikeList };
 						await MainActivity.MobileService.GetTable<PuzzleGamer>().InsertAsync(pg);
 						break;
 					case "Apps User":
 						AppUser au = new AppUser { 
 							date = DateTime.Now,
-							myList = MainActivity.likeGameDataList };
+							myList = stringsFromLikeList };
 						await MainActivity.MobileService.GetTable<AppUser>().InsertAsync(au);
 						break;
 					}

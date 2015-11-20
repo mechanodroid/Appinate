@@ -18,34 +18,34 @@ namespace Appinate
 	public class RacingGamer
 	{
 		public string Id { get; set; }
-		public List<GameData> myList { get; set; }
+		public string myList { get; set; }
 		public DateTime date;
 	}
 	public class PuzzleGamer
 	{
 		public string Id { get; set; }
-		public List<GameData> myList { get; set; }
+		public string myList { get; set; }
 		public DateTime date;
 
 	}
 	public class CasualGamer
 	{
 		public string Id { get; set; }
-		public List<GameData> myList { get; set; }
+		public string myList { get; set; }
 		public DateTime date;
 
 	}
 	public class HardcoreGamer
 	{
 		public string Id { get; set; }
-		public List<GameData> myList { get; set; }
+		public string myList { get; set; }
 		public DateTime date;
 
 	}
 	public class AppUser
 	{
 		public string Id { get; set; }
-		public List<GameData> myList { get; set; }
+		public string myList { get; set; }
 		public DateTime date;
 
 	}

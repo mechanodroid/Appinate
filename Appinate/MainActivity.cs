@@ -41,7 +41,7 @@ namespace Appinate
 			"vuFYEJOrEHRrAtKnDpaUrbcgfVGTMx66"
 		);
 
-		protected string CollectRecommendations() { 
+		public static string CollectRecommendations() { 
 			string toReturn = "";
 			KeywordExtractor extractor = new KeywordExtractor();
 			string[] res = new string[100]; //<--magic numbers, ahh!, but I'll always only pick the first so its ok
@@ -52,23 +52,6 @@ namespace Appinate
 			{
 				Random rnd = new Random();
 				int r = rnd.Next (0, likeGameDataList.Count);
-				res = extractor.FindKeyPhrases (likeGameDataList [r].description);
-				res[0] = likeGameDataList [r].title;
-				toReturn = toReturn + res [0] + " ";
-			}
-			return toReturn;
-		}
-		protected string CollectCloudRecommendations() { 
-			string toReturn = "";
-			KeywordExtractor extractor = new KeywordExtractor();
-			string[] res = new string[100]; //<--magic numbers, ahh!, but I'll always only pick the first so its ok
-			for (int j = 0; j < 100; j++)
-				res [j] = "";
-			//for entire like list, uses nrake and adds to the string the first term from each 
-			//for now only take one of these! --> make it random I guess
-			{
-				Random rnd = new Random();
-				int r = rnd.Next (0, likeCloudGameDataList.Count);
 				res = extractor.FindKeyPhrases (likeGameDataList [r].description);
 				res[0] = likeGameDataList [r].title;
 				toReturn = toReturn + res [0] + " ";
@@ -111,7 +94,7 @@ namespace Appinate
 		{
 			
 			List<GameData> gameDataListTemp = new List<GameData>();
-			List<GameData> likeCloudGameDataList = new List<GameData> ();
+			List<string> likeCloudGameDataList = new List<string> ();
 
 			//read in like list
 			storagePath = System.Environment.GetFolderPath (System.Environment.SpecialFolder.MyDocuments);
@@ -167,10 +150,7 @@ namespace Appinate
 
 						IMobileServiceTableQuery<CasualGamer> query = casualTable.CreateQuery().OrderByDescending(t => t.date);
 						List<CasualGamer> games = await query.ToListAsync();
-						foreach(GameData g in games.First().myList)
-						{
-							likeCloudGameDataList.Add(g);
-						}
+						likeCloudGameDataList.Add(games.First().myList);
 						break;
 					case "Hardcore":
 						IMobileServiceTable<HardcoreGamer> hardcoreTable =
@@ -178,10 +158,7 @@ namespace Appinate
 
 						IMobileServiceTableQuery<HardcoreGamer> query2 = hardcoreTable.CreateQuery().OrderByDescending(t => t.date);
 						List<HardcoreGamer> games2 = await query2.ToListAsync();
-						foreach(GameData g in games2.First().myList)
-						{
-							likeCloudGameDataList.Add(g);
-						}
+						likeCloudGameDataList.Add(games2.First().myList);
 						break;
 					case "Puzzle":
 						IMobileServiceTable<PuzzleGamer> puzzleTable =
@@ -189,10 +166,7 @@ namespace Appinate
 
 						IMobileServiceTableQuery<PuzzleGamer> query3 = puzzleTable.CreateQuery().OrderByDescending(t => t.date);
 						List<PuzzleGamer> games3 = await query3.ToListAsync();
-						foreach(GameData g in games3.First().myList)
-						{
-							likeCloudGameDataList.Add(g);
-						}
+						likeCloudGameDataList.Add(games3.First().myList);
 						break;
 					case "Apps User":
 						IMobileServiceTable<AppUser> appUserTable =
@@ -200,10 +174,7 @@ namespace Appinate
 
 						IMobileServiceTableQuery<AppUser> query4 = appUserTable.CreateQuery().OrderByDescending(t => t.date);
 						List<AppUser> games4 = await query4.ToListAsync();
-						foreach(GameData g in games4.First().myList)
-						{
-							likeCloudGameDataList.Add(g);
-						}
+						likeCloudGameDataList.Add(games4.First().myList);
 						break;
 
 					case "Racing" : 
@@ -212,10 +183,7 @@ namespace Appinate
 
 						IMobileServiceTableQuery<RacingGamer> query5 = racingTable.CreateQuery().OrderByDescending(t => t.date);
 						List<RacingGamer> games5 = await query5.ToListAsync();
-						foreach(GameData g in games5.First().myList)
-						{
-							likeCloudGameDataList.Add(g);
-						}
+						likeCloudGameDataList.Add(games5.First().myList);
 						break;
 					}
 				}
@@ -256,7 +224,7 @@ namespace Appinate
 				if(checkbox2.Checked)
 				{
 					//phase 3
-					recommendation += CollectCloudRecommendations();
+					recommendation += likeCloudGameDataList.First();
 				}
 				sizeOfRecommendations = this.TrimToStringArray(recommendation,ref recommendations);
 				int currentRecommendationIndex = 0;
