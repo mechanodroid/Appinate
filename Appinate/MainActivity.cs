@@ -43,19 +43,25 @@ namespace Appinate
 
 		public static string CollectRecommendations() { 
 			string toReturn = "";
+			if(likeGameDataList.Count <= 0)
+			{
+				return toReturn;
+			}
 			KeywordExtractor extractor = new KeywordExtractor();
 			string[] res = new string[100]; //<--magic numbers, ahh!, but I'll always only pick the first so its ok
 			for (int j = 0; j < 100; j++)
 				res [j] = "";
 			//for entire like list, uses nrake and adds to the string the first term from each 
 			//for now only take one of these! --> make it random I guess
+			//the following only executes once, so we're just taking one keyword:
 			{
 				Random rnd = new Random();
 				int r = rnd.Next (0, likeGameDataList.Count);
 				res = extractor.FindKeyPhrases (likeGameDataList [r].description);
-				res[0] = likeGameDataList [r].title;
-				toReturn = toReturn + res [0] + " ";
-			}
+				res[1] = likeGameDataList [r].title;
+				toReturn = toReturn + res[0] + res [1] + " ";
+			}//this is a bit hacky but basically I am taking the title of the "liked" game and the most popular search term from RAKE
+
 			return toReturn;
 		}
 
@@ -195,16 +201,7 @@ namespace Appinate
 			Button button = FindViewById<Button> (Resource.Id.myButton);
 			
 			button.Click += async (sender, e) => {
-
-				//The following is experimental
-				//BEGIN EXPERIMENTAL
-				//just an azure test for now
 				CurrentPlatform.Init();
-
-				//END EXPERIMENTAL
-				
-				//KeywordExtractor extractor = new KeywordExtractor();
-				//var res = extractor.FindKeyPhrases(//TODO Get Description and pass in here);
 				string recommendation = "";
 				numSeperateLists = 1;
 				int maxSize = 3;
@@ -230,6 +227,14 @@ namespace Appinate
 				int currentRecommendationIndex = 0;
 				int recommendationsToSearch = Math.Min(sizeOfRecommendations,maxSize);
 				string searchTerm = text.Text;
+				if(searchTerm=="")
+				{//we must have not searched on anything, skip it and use first recommendation instead
+					if(currentRecommendationIndex<recommendations.Length)
+						searchTerm = recommendations[currentRecommendationIndex];
+					else 
+						currentRecommendationIndex = recommendationsToSearch; //skip to end
+					currentRecommendationIndex++;
+				}
 				do
 				{
 					Query data = new Query();
@@ -277,7 +282,6 @@ namespace Appinate
 								index++;
 							}
 							//webclient = null; 
-							StartActivity (typeof(ResultsActivity));
 							// From here on you could deserialize the ResponseContent back again to a concrete C# type using Json.Net
 						}
 					}
@@ -289,6 +293,8 @@ namespace Appinate
 					numSeperateLists++;
 				} while (currentRecommendationIndex < recommendationsToSearch);
 				pruneGameDataListWithLikeList();//remove games which are already in users like list!
+				StartActivity (typeof(ResultsActivity));
+
 			};
 
 		}
