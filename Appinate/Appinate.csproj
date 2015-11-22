@@ -83,6 +83,7 @@
     <Compile Include="LikeListViewAdapter.cs" />
     <Compile Include="LikeActivity.cs" />
     <Compile Include="Query.cs" />
+    <Compile Include="Splash.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -101,6 +102,12 @@
     <AndroidResource Include="Resources\layout\LikeListItem.axml" />
     <AndroidResource Include="Resources\layout\Likes.axml" />
     <AndroidResource Include="Resources\layout\Main.axml" />
+    <AndroidResource Include="Resources\values\Styles.xml" />
+    <AndroidResource Include="Resources\drawable-hdpi\appinateSplash.png" />
+    <AndroidResource Include="Resources\drawable-mdpi\appinateSplash.png" />
+    <AndroidResource Include="Resources\drawable-xhdpi\appinateSplash.png" />
+    <AndroidResource Include="Resources\drawable-xxhdpi\appinateSplash.png" />
+    <AndroidResource Include="Resources\drawable-xxxhdpi\appinateSplash.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Novell\Novell.MonoDroid.CSharp.targets" />
   <ItemGroup>

@@ -20,7 +20,7 @@ using Microsoft.WindowsAzure.MobileServices;
 
 namespace Appinate
 {
-	[Activity (Label = "Appinate", MainLauncher = true, Icon = "@drawable/icon")]
+	[Activity (Label = "Appinate",  Icon = "@drawable/icon")]
 	public class MainActivity : Activity
 	{
 		int count = 1;
