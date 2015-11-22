@@ -16,6 +16,7 @@ using NRakeCore;
 using ModernHttpClient;
 using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using Microsoft.WindowsAzure.MobileServices;
 
 namespace Appinate
@@ -29,7 +30,8 @@ namespace Appinate
 
 		public static List<GameData> gameDataList{ get; set; }
 		public static List<GameData> likeGameDataList{ get; set; }
-		public static List<GameData> likeCloudGameDataList{ get; set; }
+		public static List<String> likeCloudGameDataList{ get; set; }
+
 		public static int numSeperateLists { get; set; }
 		public static bool firstTime = true;
 		public static string storagePath;
@@ -88,19 +90,112 @@ namespace Appinate
 				gameDataList.Remove (g);
 			}
 		}
-		private void spinner_ItemSelected (object sender, AdapterView.ItemSelectedEventArgs e)
+		private async void spinner_ItemSelected (object sender, AdapterView.ItemSelectedEventArgs e)
 		{
 			Spinner spinner = (Spinner)sender;
-
+		
 			string toast = string.Format ("The gamer type is is {0}", spinner.GetItemAtPosition (e.Position));
 			Toast.MakeText (this, toast, ToastLength.Long).Show ();
+			string previousSelectedGamerType = currentSelectedGamerType;
 			currentSelectedGamerType = string.Format ("{0}", spinner.GetItemAtPosition (e.Position));
+			if (currentSelectedGamerType != "General" && currentSelectedGamerType != previousSelectedGamerType) 
+			{
+				//if our gamer type changed
+				Task<int> populateTask = populateCloudLikeList();
+				var intResult = await populateTask;
+			}
+		}
+		protected override void OnResume ()
+		{
+			base.OnResume();
+			Spinner spinnerObject = FindViewById<Spinner> (Resource.Id.spinner1);
+
+			switch (currentSelectedGamerType) {
+				case "Puzzle":
+					spinnerObject.SetSelection (1); 
+					break;
+				case "Casual":
+					spinnerObject.SetSelection (2); 
+					break;
+				case "Hardcore":
+					spinnerObject.SetSelection (3); 
+					break;
+				case "Racing":
+					spinnerObject.SetSelection (4); 
+					break;
+				case "Apps User":
+					spinnerObject.SetSelection (5); 
+					break;
+			}
+		}
+		public  async Task<int> populateCloudLikeList()
+		{
+			if(currentSelectedGamerType!="")
+			{
+				switch(currentSelectedGamerType)
+				{
+				case "Casual":
+					IMobileServiceTable<CasualGamer> casualTable =
+						MobileService.GetTable<CasualGamer>();
+
+					IMobileServiceTableQuery<CasualGamer> query = casualTable.CreateQuery().OrderByDescending(t => t.date);
+					List<CasualGamer> games = await query.ToListAsync();
+					likeCloudGameDataList.Add(games.First().myList);
+					break;
+				case "Hardcore":
+					IMobileServiceTable<HardcoreGamer> hardcoreTable =
+						MobileService.GetTable<HardcoreGamer>();
+
+					IMobileServiceTableQuery<HardcoreGamer> query2 = hardcoreTable.CreateQuery().OrderByDescending(t => t.date);
+					List<HardcoreGamer> games2 = await query2.ToListAsync();
+					likeCloudGameDataList.Add(games2.First().myList);
+					break;
+				case "Puzzle":
+					IMobileServiceTable<PuzzleGamer> puzzleTable =
+						MobileService.GetTable<PuzzleGamer>();
+
+					IMobileServiceTableQuery<PuzzleGamer> query3 = puzzleTable.CreateQuery().OrderByDescending(t => t.date);
+					List<PuzzleGamer> games3 = await query3.ToListAsync();
+					likeCloudGameDataList.Add(games3.First().myList);
+					break;
+				case "Apps User":
+					IMobileServiceTable<AppUser> appUserTable =
+						MobileService.GetTable<AppUser>();
+
+					IMobileServiceTableQuery<AppUser> query4 = appUserTable.CreateQuery().OrderByDescending(t => t.date);
+					List<AppUser> games4 = await query4.ToListAsync();
+					likeCloudGameDataList.Add(games4.First().myList);
+					break;
+
+				case "Racing" : 
+					IMobileServiceTable<RacingGamer> racingTable =
+						MobileService.GetTable<RacingGamer>();
+
+					IMobileServiceTableQuery<RacingGamer> query5 = racingTable.CreateQuery().OrderByDescending(t => t.date);
+					List<RacingGamer> games5 = await query5.ToListAsync();
+					likeCloudGameDataList.Add(games5.First().myList);
+					break;
+				}
+				if(likeCloudGameDataList.Count>0)
+				{
+					string toast2 = string.Format ("Cloud like data downloaded to device.");
+					Toast.MakeText (this, toast2, ToastLength.Long).Show ();
+					return 1;
+				}
+			}
+			else
+			{
+				string toast3 = string.Format ("Current Gamer Category is blank");
+				Toast.MakeText (this, toast3, ToastLength.Long).Show ();
+				return 0;
+			}			
+			return 0;
 		}
 		protected override void OnCreate (Bundle bundle)
 		{
 			
 			List<GameData> gameDataListTemp = new List<GameData>();
-			List<string> likeCloudGameDataList = new List<string> ();
+			likeCloudGameDataList = new List<string> ();
 
 			//read in like list
 			storagePath = System.Environment.GetFolderPath (System.Environment.SpecialFolder.MyDocuments);
@@ -151,11 +246,10 @@ namespace Appinate
 				}
 				else
 				{
-				likeCloudGameDataList.Clear();
-				if(currentSelectedGamerType!="")
-				{
-					switch(currentSelectedGamerType)
+					if(currentSelectedGamerType!="")
 					{
+						switch(currentSelectedGamerType)
+						{
 						case "Casual":
 							IMobileServiceTable<CasualGamer> casualTable =
 								MobileService.GetTable<CasualGamer>();
@@ -198,6 +292,16 @@ namespace Appinate
 							likeCloudGameDataList.Add(games5.First().myList);
 							break;
 						}
+						if(likeCloudGameDataList.Count>0)
+						{
+							string toast2 = string.Format ("Cloud like data downloaded to device.");
+							Toast.MakeText (this, toast2, ToastLength.Long).Show ();
+						}
+					}
+					else
+					{
+						string toast3 = string.Format ("Current Gamer Category is blank");
+						Toast.MakeText (this, toast3, ToastLength.Long).Show ();
 					}
 				}
 			};
@@ -227,8 +331,14 @@ namespace Appinate
 
 				if(checkbox2.Checked)
 				{
+					if(likeCloudGameDataList.Count <= 0)
+					{
+						string toast = string.Format ("There is no cloud data for that category, try again!");
+						Toast.MakeText (this, toast, ToastLength.Long).Show ();
+						return;
+					}
 					//phase 3
-					recommendation += likeCloudGameDataList.First();
+					recommendation += likeCloudGameDataList.Last();
 				}
 				sizeOfRecommendations = this.TrimToStringArray(recommendation,ref recommendations);
 				int currentRecommendationIndex = 0;
