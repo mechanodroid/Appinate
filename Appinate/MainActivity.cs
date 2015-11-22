@@ -145,52 +145,59 @@ namespace Appinate
 
 			checkbox2.Click += async (sender, e) => {
 				//Getting back the data:
+				if(MainActivity.currentSelectedGamerType == "General")
+				{
+					checkbox2.Checked = !checkbox2.Checked;
+				}
+				else
+				{
 				likeCloudGameDataList.Clear();
 				if(currentSelectedGamerType!="")
 				{
 					switch(currentSelectedGamerType)
 					{
-					case "Casual":
-						IMobileServiceTable<CasualGamer> casualTable =
-							MobileService.GetTable<CasualGamer>();
+						case "Casual":
+							IMobileServiceTable<CasualGamer> casualTable =
+								MobileService.GetTable<CasualGamer>();
 
-						IMobileServiceTableQuery<CasualGamer> query = casualTable.CreateQuery().OrderByDescending(t => t.date);
-						List<CasualGamer> games = await query.ToListAsync();
-						likeCloudGameDataList.Add(games.First().myList);
-						break;
-					case "Hardcore":
-						IMobileServiceTable<HardcoreGamer> hardcoreTable =
-							MobileService.GetTable<HardcoreGamer>();
+							IMobileServiceTableQuery<CasualGamer> query = casualTable.CreateQuery().OrderByDescending(t => t.date);
+							List<CasualGamer> games = await query.ToListAsync();
+							likeCloudGameDataList.Add(games.First().myList);
+							break;
+						case "Hardcore":
+							IMobileServiceTable<HardcoreGamer> hardcoreTable =
+								MobileService.GetTable<HardcoreGamer>();
 
-						IMobileServiceTableQuery<HardcoreGamer> query2 = hardcoreTable.CreateQuery().OrderByDescending(t => t.date);
-						List<HardcoreGamer> games2 = await query2.ToListAsync();
-						likeCloudGameDataList.Add(games2.First().myList);
-						break;
-					case "Puzzle":
-						IMobileServiceTable<PuzzleGamer> puzzleTable =
-							MobileService.GetTable<PuzzleGamer>();
+							IMobileServiceTableQuery<HardcoreGamer> query2 = hardcoreTable.CreateQuery().OrderByDescending(t => t.date);
+							List<HardcoreGamer> games2 = await query2.ToListAsync();
+							likeCloudGameDataList.Add(games2.First().myList);
+							break;
+						case "Puzzle":
+							IMobileServiceTable<PuzzleGamer> puzzleTable =
+								MobileService.GetTable<PuzzleGamer>();
 
-						IMobileServiceTableQuery<PuzzleGamer> query3 = puzzleTable.CreateQuery().OrderByDescending(t => t.date);
-						List<PuzzleGamer> games3 = await query3.ToListAsync();
-						likeCloudGameDataList.Add(games3.First().myList);
-						break;
-					case "Apps User":
-						IMobileServiceTable<AppUser> appUserTable =
-							MobileService.GetTable<AppUser>();
+							IMobileServiceTableQuery<PuzzleGamer> query3 = puzzleTable.CreateQuery().OrderByDescending(t => t.date);
+							List<PuzzleGamer> games3 = await query3.ToListAsync();
+							likeCloudGameDataList.Add(games3.First().myList);
+							break;
+						case "Apps User":
+							IMobileServiceTable<AppUser> appUserTable =
+								MobileService.GetTable<AppUser>();
 
-						IMobileServiceTableQuery<AppUser> query4 = appUserTable.CreateQuery().OrderByDescending(t => t.date);
-						List<AppUser> games4 = await query4.ToListAsync();
-						likeCloudGameDataList.Add(games4.First().myList);
-						break;
+							IMobileServiceTableQuery<AppUser> query4 = appUserTable.CreateQuery().OrderByDescending(t => t.date);
+							List<AppUser> games4 = await query4.ToListAsync();
+							likeCloudGameDataList.Add(games4.First().myList);
+							break;
 
-					case "Racing" : 
-						IMobileServiceTable<RacingGamer> racingTable =
-							MobileService.GetTable<RacingGamer>();
+						case "Racing" : 
+							IMobileServiceTable<RacingGamer> racingTable =
+								MobileService.GetTable<RacingGamer>();
 
-						IMobileServiceTableQuery<RacingGamer> query5 = racingTable.CreateQuery().OrderByDescending(t => t.date);
-						List<RacingGamer> games5 = await query5.ToListAsync();
-						likeCloudGameDataList.Add(games5.First().myList);
-						break;
+							IMobileServiceTableQuery<RacingGamer> query5 = racingTable.CreateQuery().OrderByDescending(t => t.date);
+							List<RacingGamer> games5 = await query5.ToListAsync();
+							likeCloudGameDataList.Add(games5.First().myList);
+							break;
+						}
 					}
 				}
 			};
@@ -237,43 +244,35 @@ namespace Appinate
 				}
 				do
 				{
-					Query data = new Query();
-					InnerQuery iq = new InnerQuery();
-					QueryParms qp = new QueryParms();
-					qp.sort = "number_ratings";
-					qp.from = 0;
-					qp.num = 100;
-					qp.sort_order = "desc";
-					qp.full_text_term = searchTerm;//the actual search term
-					qp.include_full_text_desc = true;
-					iq.platform = "android";
-					iq.query_params = qp;
-					data.query = iq;
+					string Matters42=  "https://42matters.com/api/1/apps/search.json?q="+ searchTerm + "&limit=50&page=2&&access_token=8baf2a81c06ef3af38cd6ee3bbfee42f74e2497a";
+					string strUri=  string.Format ( Matters42 );
 
-					// Serialize our concrete class into a JSON String
-					var stringPayload = JsonConvert.SerializeObject(data);
-
-					// Wrap our JSON inside a StringContent which then can be used by the HttpClient class
-					var httpContent = new StringContent(stringPayload, Encoding.UTF8, "application/json");
-
-					using (var httpClient = new HttpClient()) {
-
-						// Do the actual request and await the response
-						var httpResponse = await httpClient.PostAsync(apiUrl, httpContent);
-
-						// If the response contains content we want to read it!
-						if (httpResponse.Content != null) {
-							var responseContent = await httpResponse.Content.ReadAsStringAsync();
-							var jObj = (JObject)JsonConvert.DeserializeObject (responseContent);
-							var result = jObj ["results"]
-								.Select (item => new GameData {
-									promo_video = (string)item ["promo_video"],
-									description = (string)item ["description"],
-									icon = (string)item ["icon"],
-									title = (string)item ["title"],
-									market_url = (string)item ["market_url"]
+					//Download string using webclient object
+					var webclient = new WebClient ();
+					string strResultData ="";
+					try
+					{ 
+						strResultData=  webclient.DownloadString (new System.Uri(strUri));  
+					}
+					catch
+					{ 
+						Toast.MakeText ( this , "Unable to connect to server!!!" , ToastLength.Short ).Show (); 
+					}
+					finally
+					{
+						webclient.Dispose ();   //dispose webclient object
+						//List<GameDataResults> result = JsonConvert.DeserializeObject<List<GameDataResults>>(strResultData);
+						var jObj = (JObject)JsonConvert.DeserializeObject(strResultData);
+						var result = jObj["results"]
+							.Select(item => new GameData
+								{
+									promo_video = (string)item["promo_video"],
+									description = (string)item["description"],
+									icon = (string)item["icon"],
+									title = (string)item["title"],
+									market_url = (string)item["market_url"]
 								})
-								.ToList ();
+							.ToList ();
 							gameDataListTemp = result;
 							int index = 0;
 							foreach(GameData g in gameDataListTemp)
@@ -281,9 +280,6 @@ namespace Appinate
 								gameDataList.Insert(index*numSeperateLists, g);
 								index++;
 							}
-							//webclient = null; 
-							// From here on you could deserialize the ResponseContent back again to a concrete C# type using Json.Net
-						}
 					}
 					if(currentRecommendationIndex<recommendations.Length)
 						searchTerm = recommendations[currentRecommendationIndex];

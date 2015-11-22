@@ -25,6 +25,15 @@ namespace Appinate
 		ListView _gdListView;
 		LikeListViewAdapter _adapter;
 
+		private void spinner_ItemSelected (object sender, AdapterView.ItemSelectedEventArgs e)
+		{
+			Spinner spinner = (Spinner)sender;
+
+			string toast = string.Format ("The gamer type is is {0}", spinner.GetItemAtPosition (e.Position));
+			Toast.MakeText (this, toast, ToastLength.Long).Show ();
+			MainActivity.currentSelectedGamerType = string.Format ("{0}", spinner.GetItemAtPosition (e.Position));
+		}
+
 		protected override void OnCreate (Bundle bundle)
 		{
 			
@@ -34,6 +43,15 @@ namespace Appinate
 			_gdListView = FindViewById<ListView> (Resource.Id.listView1);
 			_adapter = new LikeListViewAdapter (this);
 			_gdListView.Adapter = _adapter;
+
+			Spinner spinner = FindViewById<Spinner> (Resource.Id.spinner1);
+
+			spinner.ItemSelected += new EventHandler<AdapterView.ItemSelectedEventArgs> (spinner_ItemSelected);
+			var adapter = ArrayAdapter.CreateFromResource (
+				this, Resource.Array.gamer_type_array, Android.Resource.Layout.SimpleSpinnerItem);
+
+			adapter.SetDropDownViewResource (Android.Resource.Layout.SimpleSpinnerDropDownItem);
+			spinner.Adapter = adapter;
 
 			// Get our button from the layout resource,
 			// and attach an event to it

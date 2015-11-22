@@ -15,15 +15,14 @@
             android:layout_alignParentLeft="true" />
     </RelativeLayout>
     <Button
-        android:text="Recommend"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/button3" />
-    <Button
         android:text="Save"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/button4" />
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner1" />
     <ListView
         android:minWidth="25px"
         android:minHeight="25px"

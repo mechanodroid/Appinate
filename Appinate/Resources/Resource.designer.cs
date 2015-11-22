@@ -87,10 +87,7 @@ namespace Appinate
 			public const int button2 = 2131099652;
 			
 			// aapt resource value: 0x7f060005
-			public const int button3 = 2131099653;
-			
-			// aapt resource value: 0x7f060006
-			public const int button4 = 2131099654;
+			public const int button4 = 2131099653;
 			
 			// aapt resource value: 0x7f060003
 			public const int checkBox1 = 2131099651;
@@ -110,8 +107,8 @@ namespace Appinate
 			// aapt resource value: 0x7f060000
 			public const int relativeLayout1 = 2131099648;
 			
-			// aapt resource value: 0x7f06000c
-			public const int spinner1 = 2131099660;
+			// aapt resource value: 0x7f060006
+			public const int spinner1 = 2131099654;
 			
 			// aapt resource value: 0x7f060002
 			public const int textView1 = 2131099650;
