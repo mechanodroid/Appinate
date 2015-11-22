@@ -387,7 +387,10 @@ namespace Appinate
 							int index = 0;
 							foreach(GameData g in gameDataListTemp)
 							{
-								gameDataList.Insert(index*numSeperateLists, g);
+								if(index<20)
+								{
+									gameDataList.Insert(index*numSeperateLists, g);
+								}
 								index++;
 							}
 					}
