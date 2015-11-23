@@ -28,8 +28,10 @@ namespace Appinate
 		private void spinner_ItemSelected (object sender, AdapterView.ItemSelectedEventArgs e)
 		{
 			Spinner spinner = (Spinner)sender;
-
-			string toast = string.Format ("The gamer type is is {0}", spinner.GetItemAtPosition (e.Position));
+			if (e.Position == 0) {
+				return;
+			}
+			string toast = string.Format ("Click Save Button to Upload to Cloud for: {0}", spinner.GetItemAtPosition (e.Position));
 			Toast.MakeText (this, toast, ToastLength.Long).Show ();
 			MainActivity.currentSelectedGamerType = string.Format ("{0}", spinner.GetItemAtPosition (e.Position));
 		}
@@ -48,7 +50,7 @@ namespace Appinate
 
 			spinner.ItemSelected += new EventHandler<AdapterView.ItemSelectedEventArgs> (spinner_ItemSelected);
 			var adapter = ArrayAdapter.CreateFromResource (
-				this, Resource.Array.gamer_type_array, Android.Resource.Layout.SimpleSpinnerItem);
+				this, Resource.Array.gamer_type_array2, Android.Resource.Layout.SimpleSpinnerItem);
 
 			adapter.SetDropDownViewResource (Android.Resource.Layout.SimpleSpinnerDropDownItem);
 			spinner.Adapter = adapter;

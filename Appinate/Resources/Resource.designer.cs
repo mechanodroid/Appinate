@@ -35,6 +35,9 @@ namespace Appinate
 			// aapt resource value: 0x7f050000
 			public const int gamer_type_array = 2131034112;
 			
+			// aapt resource value: 0x7f050001
+			public const int gamer_type_array2 = 2131034113;
+			
 			static Array()
 			{
 				global::Android.Runtime.ResourceIdManager.UpdateIdValues();

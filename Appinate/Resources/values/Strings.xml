@@ -11,4 +11,12 @@
         <item>Racing</item>
         <item>Apps User</item>
     </string-array>
+    <string-array name="gamer_type_array2">
+    	<item>Click to select gamer type</item>
+        <item>Puzzle</item>
+        <item>Casual</item>
+        <item>Hardcore</item>
+        <item>Racing</item>
+        <item>Apps User</item>
+    </string-array>
 </resources>
