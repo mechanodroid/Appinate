@@ -362,7 +362,7 @@ namespace Appinate
 					string strResultData ="";
 					try
 					{ 
-						strResultData=  webclient.DownloadString (new System.Uri(strUri));  
+						strResultData=  await webclient.DownloadStringTaskAsync (new System.Uri(strUri));  
 					}
 					catch
 					{ 

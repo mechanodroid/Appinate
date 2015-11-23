@@ -109,7 +109,6 @@ namespace Appinate
 		private Bitmap GetImageBitmapFromUrl(string url)
 		{
 			Bitmap imageBitmap = null;
-
 			using (var webClient = new WebClient())
 			{
 				var imageBytes = webClient.DownloadData(url);
