@@ -4,11 +4,6 @@
     p1:layout_height="wrap_content"
     p1:id="@+id/relativeLayout1"
     p1:padding="5dp">
-    <ImageButton
-        p1:src="@android:drawable/ic_menu_gallery"
-        p1:layout_width="88.1dp"
-        p1:layout_height="77.7dp"
-        p1:id="@+id/imageButton1" />
     <TextView
         p1:text="Text"
         p1:textAppearance="?android:attr/textAppearanceLarge"
@@ -29,4 +24,11 @@
         p1:layout_alignParentRight="true"
         p1:layout_marginRight="20.0dp"
         p1:layout_marginLeft="0.0dp" />
+    <ImageView
+        p1:src="@android:drawable/ic_menu_gallery"
+        p1:layout_width="81.8dp"
+        p1:layout_height="wrap_content"
+        p1:id="@+id/imageView1"
+        p1:minWidth="100dp"
+        p1:minHeight="100dp" />
 </RelativeLayout>

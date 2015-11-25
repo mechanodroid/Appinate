@@ -12,6 +12,8 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using Android.Graphics;
+using Square.Picasso;
+using Square.OkHttp;
 
 namespace Appinate
 {
@@ -46,12 +48,12 @@ namespace Appinate
 
 			GameData gd = MainActivity.gameDataList[position];
 			view.FindViewById<TextView> (Resource.Id.textView1).Text = gd.title;
-
-			ImageButton button  =view.FindViewById<ImageButton>(Resource.Id.imageButton1);
-			var imageBitmap = GetImageBitmapFromUrl(gd.icon);
-			button.SetImageBitmap(imageBitmap);	
-
-			button.Click += delegate {
+			TextView myText = view.FindViewById<TextView> (Resource.Id.textView1); 
+				
+			ImageView iv  = view.FindViewById<ImageView>(Resource.Id.imageView1);
+			Picasso.With(_context).Load(gd.icon).Into(iv);
+					
+			myText.Click += delegate {
 				var uri = Android.Net.Uri.Parse (gd.market_url);
 				var intent = new Intent (Intent.ActionView, uri);
 				_context.StartActivity (intent);
