@@ -30,6 +30,7 @@ namespace Appinate
 
 		public static List<GameData> gameDataList{ get; set; }
 		public static List<GameData> likeGameDataList{ get; set; }
+		public static List<GameData> likeGameDataListResults{ get; set; }
 		public static List<String> likeCloudGameDataList{ get; set; }
 
 		public static int numSeperateLists { get; set; }
@@ -196,6 +197,8 @@ namespace Appinate
 			
 			List<GameData> gameDataListTemp = new List<GameData>();
 			likeCloudGameDataList = new List<string> ();
+			likeGameDataListResults = new List<GameData> ();
+
 
 			//read in like list
 			storagePath = System.Environment.GetFolderPath (System.Environment.SpecialFolder.MyDocuments);
