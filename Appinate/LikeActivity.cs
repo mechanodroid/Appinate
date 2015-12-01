@@ -114,6 +114,29 @@ namespace Appinate
 							myList = stringsFromLikeList };
 						await MainActivity.MobileService.GetTable<AppUser>().InsertAsync(au);
 						break;
+					case "Dev Save (do not use)":
+						HardcoreGamer h = new HardcoreGamer { 
+							date = DateTime.Now,
+							myList = "shooter blood game" };
+						await MainActivity.MobileService.GetTable<HardcoreGamer>().InsertAsync(h);
+						CasualGamer c = new CasualGamer { 
+							date = DateTime.Now,
+							myList = "gem marble birds" };
+						await MainActivity.MobileService.GetTable<CasualGamer>().InsertAsync(c);
+						RacingGamer r = new RacingGamer { 
+							date = DateTime.Now,
+							myList = "racing crash car" };
+						await MainActivity.MobileService.GetTable<RacingGamer>().InsertAsync(r);
+						PuzzleGamer p = new PuzzleGamer { 
+							date = DateTime.Now,
+							myList = "puzzle mahjong tetris" };
+						await MainActivity.MobileService.GetTable<PuzzleGamer>().InsertAsync(p);
+						AppUser a = new AppUser { 
+							date = DateTime.Now,
+							myList = "facebook business messenger" };
+						await MainActivity.MobileService.GetTable<AppUser>().InsertAsync(a);
+						break;
+
 					}
 				}
 			};
