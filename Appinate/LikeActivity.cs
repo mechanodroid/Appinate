@@ -117,7 +117,7 @@ namespace Appinate
 					case "Dev Save (do not use)":
 						HardcoreGamer h = new HardcoreGamer { 
 							date = DateTime.Now,
-							myList = "shooter blood game" };
+							myList = "shooter guns game" };
 						await MainActivity.MobileService.GetTable<HardcoreGamer>().InsertAsync(h);
 						CasualGamer c = new CasualGamer { 
 							date = DateTime.Now,
