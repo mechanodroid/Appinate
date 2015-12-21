@@ -44,6 +44,13 @@ namespace Appinate
 			"vuFYEJOrEHRrAtKnDpaUrbcgfVGTMx66"
 		);
 
+		protected override void OnStart()
+		{
+			var platform = new Microsoft.WindowsAzure.MobileServices.CurrentPlatform();
+			Console.WriteLine(platform);
+			base.OnStart ();
+		}
+
 		public static string CollectRecommendations() { 
 			string toReturn = "";
 			if(likeGameDataList.Count <= 0)
