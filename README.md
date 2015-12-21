@@ -2,6 +2,7 @@
 Notes for install:
 
 To install, you should click on either of the following filename which you should see in the root of the Appinate folder on github (I'd recommend clicking on the first one listed below, the other one is a debug version)
+   com.uwmiui.appinate.apk
    com.debug.thawedcodebase.appinate.apk
 
 Once you click on this file it will take you to the file view, where you can then click on "raw", which will prompt you
