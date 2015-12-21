@@ -1,14 +1,16 @@
 # Appinate
 Notes for install:
 
-To install, you should click on either of the following filename which you should see in the root of the Appinate folder on github (I'd recommend clicking on the first one listed below, the other one is a debug version)
+1. You must have android version 4.0.3 or higher
+
+2. To install, you should click on either of the following filename which you should see in the root of the Appinate folder on github (I'd recommend clicking on the first one listed below, the other one is a debug version)
    com.uwmiui.appinate.apk
    com.debug.thawedcodebase.appinate.apk
 
 Once you click on this file it will take you to the file view, where you can then click on "raw", which will prompt you
 to save the file to your android device.  Once you have done so, open your downloads folder on the android device and click it, select install.   Note: you may have to go to Settings on your android device to allow for installing applications
 from unknown sources.
-
+---------------------------------------------------
 Notes for usage:
  
 To use Phase 1:
