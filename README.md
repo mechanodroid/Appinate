@@ -1,5 +1,5 @@
 # Appinate
-Notes for install:
+<b>Notes for install:</b>
 
 1. You must have android version 4.0.3 or higher
 
@@ -8,10 +8,10 @@ Notes for install:
    com.debug.thawedcodebase.appinate.apk
 
 Once you click on this file it will take you to the file view, where you can then click on "raw", which will prompt you
-to save the file to your android device.  Once you have done so, open your downloads folder on the android device and click it, select install.   Note: you may have to go to Settings on your android device to allow for installing applications
-from unknown sources.
+to save the file to your android device.  Once you have done so, open your downloads folder on the android device and click it, select install.   Note: you may have to go to Settings on your android device to allow for installing applications from unknown sources.
+
 ---------------------------------------------------
-Notes for usage:
+<b>Notes for usage:</b>
  
 To use Phase 1:
 Don’t click any check boxes and simply put in your search
