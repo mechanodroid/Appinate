@@ -3,7 +3,7 @@
 
 1. You must have android version 4.0.3 or higher
 
-2. To install, you should click on the following filename which you should see in the root of the Appinate folder on github: <b>com.uwmiui.appinate.apk</b> Or click <a href="https://github.com/mechanodroid/Appinate/blob/master/com.uwmiui.appinate.apk">here</a>.
+2. To install, you should click on the following filename which you should see in the root of the Appinate folder on github: <b>com.uwmiui.appinate.apk</b> Or click <a href="https://github.com/mechanodroid/Appinate/raw/master/com.uwmiui.appinate.apk">here</a>.
 
 3. Once you click on this file it will take you to the file view, where you can then click on "raw", which will prompt you to save the file to your android device.  Once you have done so, open your downloads folder on the android device and click it, select install.   
 
