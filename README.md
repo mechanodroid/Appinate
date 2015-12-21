@@ -1,8 +1,7 @@
 # Appinate
 Notes for install:
 
-For some obscure reasons related to Microsoft Azure, only debug is working for Appinate when you are installing from
-the internet.  Therefore you should click on the following filename which you should see in the root of the Appinate folder on github:
+To install, you should click on either of the following filename which you should see in the root of the Appinate folder on github (I'd recommend clicking on the first one listed below, the other one is a debug version)
    com.debug.thawedcodebase.appinate.apk
 
 Once you click on this file it will take you to the file view, where you can then click on "raw", which will prompt you
